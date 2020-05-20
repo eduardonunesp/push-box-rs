@@ -6,6 +6,7 @@ use super::block::Block;
 use super::gbox::GBox;
 use super::ground::Ground;
 use super::pawn::{Pawn, PawnType};
+use super::place::Place;
 use super::player::Player;
 
 const VECTOR_RIGHT: Vector2<i32> = Vector2::new(1, 0);
@@ -19,6 +20,7 @@ pub struct Board {
   ground: Vec<Vec<Ground>>,
   gbox: Vec<GBox>,
   block: Vec<Block>,
+  place: Vec<Place>,
   width: i32,
   height: i32,
   grid: Vec<Vec<PawnType>>,
@@ -29,8 +31,12 @@ impl Board {
     let grid: Vec<Vec<PawnType>> = vec![vec![PawnType::Ground; 10]; 10];
     let ground: Vec<Vec<Ground>> = vec![vec![Ground::new(ctx, Vector2::<i32>::new(0, 0)); 10]; 10];
     let player = Player::new(ctx, Vector2::<i32>::new(0, 0));
+
     let gbox1 = Vector2::<i32>::new(5, 5);
     let gbox: Vec<GBox> = vec![GBox::new(ctx, 0, gbox1)];
+
+    let place1 = Vector2::<i32>::new(5, 6);
+    let place: Vec<Place> = vec![Place::new(ctx, place1)];
 
     let mut block: Vec<Block> = vec![];
 
@@ -41,6 +47,7 @@ impl Board {
     let mut s = Board {
       player,
       ground,
+      place,
       block,
       gbox,
       grid,
@@ -51,6 +58,8 @@ impl Board {
     for p in [(2, 2)].iter() {
       s.set_cell_type(Vector2::<i32>::new(p.0, p.1), PawnType::Block);
     }
+
+    s.set_cell_type(place1, PawnType::Place);
 
     s.set_cell_type(gbox1, PawnType::GBox(0));
 
@@ -67,11 +76,15 @@ impl Board {
       }
     }
 
-    for (_, row) in self.gbox.iter_mut().enumerate() {
+    for (_, row) in self.block.iter_mut().enumerate() {
       row.draw(ctx)?;
     }
 
-    for (_, row) in self.block.iter_mut().enumerate() {
+    for (_, row) in self.place.iter_mut().enumerate() {
+      row.draw(ctx)?;
+    }
+
+    for (_, row) in self.gbox.iter_mut().enumerate() {
       row.draw(ctx)?;
     }
 
@@ -146,6 +159,7 @@ impl Board {
 
     match cell_dest_type {
       PawnType::Ground => Some(direction),
+      PawnType::Place => Some(direction),
       _ => None,
     }
   }

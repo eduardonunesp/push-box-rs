@@ -10,6 +10,7 @@ mod gamestate;
 mod gbox;
 mod ground;
 mod pawn;
+mod place;
 mod player;
 
 const SCREEN_WIDTH: f32 = 640.;
