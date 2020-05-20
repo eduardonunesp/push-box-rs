@@ -4,8 +4,10 @@ use std::path;
 use ggez;
 use ggez::{event, GameResult};
 
+mod block;
 mod board;
 mod gamestate;
+mod gbox;
 mod ground;
 mod pawn;
 mod player;

@@ -6,9 +6,10 @@ use ggez::{Context, GameResult};
 pub enum PawnType {
   Player,
   Ground,
-  Box,
+  GBox(u8),
   Block,
   Place,
+  Unknown,
 }
 
 pub trait Pawn {
