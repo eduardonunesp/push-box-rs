@@ -4,7 +4,11 @@ use std::path;
 use ggez;
 use ggez::{event, GameResult};
 
+mod board;
 mod gamestate;
+mod ground;
+mod pawn;
+mod player;
 
 const SCREEN_WIDTH: f32 = 640.;
 const SCREEN_HEIGHT: f32 = 640.;
