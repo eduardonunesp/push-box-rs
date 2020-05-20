@@ -66,6 +66,25 @@ impl Board {
   fn request_move(&mut self, direction: cgmath::Vector2<i32>) -> Option<Vector2<i32>> {
     let cell_start = self.player.get_position();
     let cell_dest = cell_start + direction;
+
+    println!("start {:?} dest {:?}", cell_dest, cell_start);
+
+    if cell_dest.x < 0 {
+      return None;
+    }
+
+    if cell_dest.x > (10) {
+      return None;
+    }
+
+    if cell_dest.y < 0 {
+      return None;
+    }
+
+    if cell_dest.y > (10) {
+      return None;
+    }
+
     Some(cell_dest)
   }
 
