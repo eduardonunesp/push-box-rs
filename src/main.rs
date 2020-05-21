@@ -6,6 +6,7 @@ use ggez::{event, GameResult};
 
 mod board;
 mod gamestate;
+mod levels;
 mod pawn;
 
 const GRID_SIZE: (usize, usize) = (10, 10);
@@ -24,14 +25,15 @@ fn main() -> GameResult {
         path::PathBuf::from("./resources")
     };
 
-    let (ctx, events_loop) = &mut ggez::ContextBuilder::new("PushBoxRS", "Some Famous Clone")
-        .window_setup(ggez::conf::WindowSetup::default().title("PushBoxRS"))
-        .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
-        .backend(ggez::conf::Backend::OpenGL { major: 3, minor: 2 })
-        .add_resource_path(resource_dir)
-        .build()?;
+    let (ctx, events_loop) =
+        &mut ggez::ContextBuilder::new("push-box-rs", "eduardonunesp@gmail.com")
+            .window_setup(ggez::conf::WindowSetup::default().title("push-box-rs"))
+            .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
+            .backend(ggez::conf::Backend::OpenGL { major: 3, minor: 2 })
+            .add_resource_path(resource_dir)
+            .build()?;
 
     let state = &mut gamestate::GameState::new(ctx, GRID_SIZE, GRID_CELL_SIZE)?;
-    state.load_stage(ctx);
+    state.next_stage(ctx);
     event::run(ctx, events_loop, state)
 }

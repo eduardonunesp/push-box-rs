@@ -2,7 +2,6 @@ use cgmath::Vector2;
 use ggez::graphics::Image;
 use ggez::{graphics, Context, GameResult};
 
-#[allow(dead_code)]
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum PawnType {
   Player,

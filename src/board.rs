@@ -1,6 +1,6 @@
 use cgmath::Vector2;
 use ggez::event::KeyCode;
-use ggez::{Context, GameResult};
+use ggez::{timer, Context, GameResult};
 
 use super::pawn::{Pawn, PawnType};
 
@@ -10,16 +10,16 @@ const VECTOR_DOWN: Vector2<f32> = Vector2::new(0., 1.);
 const VECTOR_UP: Vector2<f32> = Vector2::new(0., -1.);
 const VECTOR_ZERO: Vector2<f32> = Vector2::new(0., 0.);
 
-#[allow(dead_code)]
 pub struct Board {
   player: Pawn,
   grounds: Vec<Vec<Pawn>>,
   boxes: Vec<Pawn>,
   blocks: Vec<Pawn>,
   places: Vec<Pawn>,
-  grid_size: (usize, usize),
-  cell_size: (usize, usize),
   grid: Vec<Vec<PawnType>>,
+  finished: bool,
+  seconds_after_finish: f32,
+  pub winner: bool,
 }
 
 impl Board {
@@ -58,12 +58,25 @@ impl Board {
       blocks,
       boxes,
       grid,
-      grid_size,
-      cell_size,
+      seconds_after_finish: 0.,
+      finished: false,
+      winner: false,
     }
   }
 
-  pub fn update(&mut self, _ctx: &mut Context) {}
+  pub fn update(&mut self, ctx: &mut Context) {
+    const DESIRED_FPS: u32 = 60;
+
+    while timer::check_update_time(ctx, DESIRED_FPS) {
+      let seconds = 1.0 / (DESIRED_FPS as f32);
+      if self.finished {
+        self.seconds_after_finish += seconds;
+        if self.seconds_after_finish >= 0.5 {
+          self.winner = true;
+        }
+      }
+    }
+  }
 
   pub fn set_player_start(&mut self, position: Vector2<f32>) {
     self.player.set_position(position);
@@ -142,6 +155,10 @@ impl Board {
   }
 
   pub fn key_down(&mut self, keycode: KeyCode) {
+    if self.finished {
+      return;
+    }
+
     let dest = match keycode {
       KeyCode::Right => VECTOR_RIGHT,
       KeyCode::Left => VECTOR_LEFT,
@@ -152,6 +169,9 @@ impl Board {
 
     if let Some(cell_dest) = self.request_move(dest) {
       self.player.set_position(cell_dest);
+      if self.check_winner() {
+        self.finished = true;
+      }
     }
 
     if keycode == KeyCode::I {
@@ -219,6 +239,18 @@ impl Board {
       PawnType::Place => Some(direction),
       _ => None,
     }
+  }
+
+  fn check_winner(&self) -> bool {
+    for (_, row) in self.grid.iter().enumerate() {
+      for (_, col) in row.iter().enumerate() {
+        if *col == PawnType::Place {
+          return false;
+        }
+      }
+    }
+
+    true
   }
 
   fn get_cell_type(&self, position: Vector2<f32>) -> Option<PawnType> {

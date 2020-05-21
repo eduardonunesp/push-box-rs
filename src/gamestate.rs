@@ -4,9 +4,12 @@ use ggez::event::{KeyCode, KeyMods};
 use ggez::{event, graphics, timer, Context, GameResult};
 
 use super::board::Board;
+use super::levels;
 
 pub struct GameState {
     board: Board,
+    current_stage: usize,
+    grid_size: (usize, usize),
     cell_size: (usize, usize),
 }
 
@@ -17,28 +20,25 @@ impl GameState {
         cell_size: (usize, usize),
     ) -> GameResult<GameState> {
         Ok(GameState {
+            grid_size,
             cell_size,
+            current_stage: 0,
             board: Board::new(ctx, grid_size, cell_size),
         })
     }
 
-    pub fn load_stage(&mut self, ctx: &mut Context) {
-        let blocks = vec![
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 9, 0, 0, 0, 2, 0, 0, 3, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        ];
+    pub fn next_stage(&mut self, ctx: &mut Context) {
+        if (self.current_stage + 1) > levels::LEVELS.len() {
+            println!("Thank You!");
+            event::quit(ctx);
+            return;
+        }
 
-        for (i, row) in blocks.iter().enumerate() {
+        self.board = Board::new(ctx, self.grid_size, self.cell_size);
+
+        for (i, row) in levels::LEVELS[self.current_stage].iter().enumerate() {
             for (j, col) in row.iter().enumerate() {
-                if *col == 1 {
+                if *col == levels::B {
                     self.board.add_block(
                         ctx,
                         Vector2::<f32>::new(j as f32, i as f32),
@@ -46,12 +46,12 @@ impl GameState {
                     );
                 }
 
-                if *col == 9 {
+                if *col == levels::A {
                     self.board
                         .set_player_start(Vector2::<f32>::new(j as f32, i as f32));
                 }
 
-                if *col == 2 {
+                if *col == levels::X {
                     self.board.add_box(
                         ctx,
                         Vector2::<f32>::new(j as f32, i as f32),
@@ -59,7 +59,7 @@ impl GameState {
                     );
                 }
 
-                if *col == 3 {
+                if *col == levels::P {
                     self.board.add_place(
                         ctx,
                         Vector2::<f32>::new(j as f32, i as f32),
@@ -68,6 +68,8 @@ impl GameState {
                 }
             }
         }
+
+        self.current_stage += 1;
     }
 }
 
@@ -76,6 +78,9 @@ impl event::EventHandler for GameState {
         const DESIRED_FPS: u32 = 60;
         while timer::check_update_time(ctx, DESIRED_FPS) {
             self.board.update(ctx);
+            if self.board.winner {
+                self.next_stage(ctx);
+            }
         }
         Ok(())
     }
