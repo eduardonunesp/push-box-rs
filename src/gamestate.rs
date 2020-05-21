@@ -7,6 +7,7 @@ use super::board::Board;
 
 pub struct GameState {
     board: Board,
+    cell_size: (usize, usize),
 }
 
 impl GameState {
@@ -15,11 +16,58 @@ impl GameState {
         grid_size: (usize, usize),
         cell_size: (usize, usize),
     ) -> GameResult<GameState> {
-        let mut board = Board::new(ctx, grid_size, cell_size);
-        board.set_player_start(Vector2::<f32>::new(2., 5.));
-        board.add_box(ctx, Vector2::<f32>::new(5., 5.), cell_size);
-        board.add_place(ctx, Vector2::<f32>::new(7., 5.), cell_size);
-        Ok(GameState { board })
+        Ok(GameState {
+            cell_size,
+            board: Board::new(ctx, grid_size, cell_size),
+        })
+    }
+
+    pub fn load_stage(&mut self, ctx: &mut Context) {
+        let blocks = vec![
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 9, 0, 0, 0, 2, 0, 0, 3, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            vec![1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        ];
+
+        for (i, row) in blocks.iter().enumerate() {
+            for (j, col) in row.iter().enumerate() {
+                if *col == 1 {
+                    self.board.add_block(
+                        ctx,
+                        Vector2::<f32>::new(j as f32, i as f32),
+                        self.cell_size,
+                    );
+                }
+
+                if *col == 9 {
+                    self.board
+                        .set_player_start(Vector2::<f32>::new(j as f32, i as f32));
+                }
+
+                if *col == 2 {
+                    self.board.add_box(
+                        ctx,
+                        Vector2::<f32>::new(j as f32, i as f32),
+                        self.cell_size,
+                    );
+                }
+
+                if *col == 3 {
+                    self.board.add_place(
+                        ctx,
+                        Vector2::<f32>::new(j as f32, i as f32),
+                        self.cell_size,
+                    );
+                }
+            }
+        }
     }
 }
 

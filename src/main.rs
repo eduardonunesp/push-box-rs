@@ -32,5 +32,6 @@ fn main() -> GameResult {
         .build()?;
 
     let state = &mut gamestate::GameState::new(ctx, GRID_SIZE, GRID_CELL_SIZE)?;
+    state.load_stage(ctx);
     event::run(ctx, events_loop, state)
 }
