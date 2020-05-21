@@ -1,5 +1,5 @@
 [package]
-name = "sokoban"
+name = "push-box-rs"
 version = "0.1.0"
 authors = ["Eduardo Nunes Pereira <eduardonunesp@gmail.com>"]
 edition = "2018"
@@ -9,4 +9,3 @@ edition = "2018"
 [dependencies]
 cgmath = { version = "0.17", features = ["mint"]}
 ggez = "0.5"
-rand = "0.7.3"

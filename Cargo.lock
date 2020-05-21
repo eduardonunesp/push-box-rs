@@ -1432,6 +1432,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "push-box-rs"
+version = "0.1.0"
+dependencies = [
+ "cgmath",
+ "ggez",
+]
+
+[[package]]
 name = "quote"
 version = "0.6.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1916,15 +1924,6 @@ dependencies = [
  "wayland-client",
  "wayland-commons",
  "wayland-protocols",
-]
-
-[[package]]
-name = "sokoban"
-version = "0.1.0"
-dependencies = [
- "cgmath",
- "ggez",
- "rand 0.7.3",
 ]
 
 [[package]]

@@ -24,8 +24,8 @@ fn main() -> GameResult {
         path::PathBuf::from("./resources")
     };
 
-    let (ctx, events_loop) = &mut ggez::ContextBuilder::new("PushBox", "Some Famous Clone")
-        .window_setup(ggez::conf::WindowSetup::default().title("PushBox"))
+    let (ctx, events_loop) = &mut ggez::ContextBuilder::new("PushBoxRS", "Some Famous Clone")
+        .window_setup(ggez::conf::WindowSetup::default().title("PushBoxRS"))
         .window_mode(ggez::conf::WindowMode::default().dimensions(SCREEN_SIZE.0, SCREEN_SIZE.1))
         .backend(ggez::conf::Backend::OpenGL { major: 3, minor: 2 })
         .add_resource_path(resource_dir)
