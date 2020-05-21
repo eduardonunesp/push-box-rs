@@ -16,7 +16,9 @@ impl GameState {
         cell_size: (usize, usize),
     ) -> GameResult<GameState> {
         let mut board = Board::new(ctx, grid_size, cell_size);
+        board.set_player_start(Vector2::<f32>::new(2., 5.));
         board.add_box(ctx, Vector2::<f32>::new(5., 5.), cell_size);
+        board.add_place(ctx, Vector2::<f32>::new(7., 5.), cell_size);
         Ok(GameState { board })
     }
 }

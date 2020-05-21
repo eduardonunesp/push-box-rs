@@ -65,13 +65,17 @@ impl Board {
 
   pub fn update(&mut self, _ctx: &mut Context) {}
 
+  pub fn set_player_start(&mut self, position: Vector2<f32>) {
+    self.player.set_position(position);
+  }
+
   pub fn add_block(
     &mut self,
     ctx: &mut Context,
     position: Vector2<f32>,
     cell_size: (usize, usize),
   ) {
-    self.boxes.push(Pawn::new(
+    self.blocks.push(Pawn::new(
       ctx,
       "block.png".to_string(),
       PawnType::Block,
@@ -101,7 +105,7 @@ impl Board {
     position: Vector2<f32>,
     cell_size: (usize, usize),
   ) {
-    self.boxes.push(Pawn::new(
+    self.places.push(Pawn::new(
       ctx,
       "place.png".to_string(),
       PawnType::Place,
@@ -120,16 +124,16 @@ impl Board {
       }
     }
 
-    for (_, row) in self.blocks.iter_mut().enumerate() {
-      row.draw(ctx)?;
+    for (_, place) in self.places.iter_mut().enumerate() {
+      place.draw(ctx)?;
     }
 
-    for (_, row) in self.places.iter_mut().enumerate() {
-      row.draw(ctx)?;
+    for (_, block) in self.blocks.iter_mut().enumerate() {
+      block.draw(ctx)?;
     }
 
-    for (_, row) in self.boxes.iter_mut().enumerate() {
-      row.draw(ctx)?;
+    for (_, gbox) in self.boxes.iter_mut().enumerate() {
+      gbox.draw(ctx)?;
     }
 
     self.player.draw(ctx)?;
@@ -149,6 +153,14 @@ impl Board {
     if let Some(cell_dest) = self.request_move(dest) {
       self.player.set_position(cell_dest);
     }
+
+    if keycode == KeyCode::I {
+      for (i, row) in self.grid.iter().enumerate() {
+        for (j, col) in row.iter().enumerate() {
+          println!("Col {} Row {} Type {:?}", i, j, col);
+        }
+      }
+    }
   }
 
   fn request_move(&mut self, direction: Vector2<f32>) -> Option<Vector2<f32>> {
@@ -157,8 +169,8 @@ impl Board {
     let cell_dest = cell_start + direction;
     let cell_dest_type = self.get_cell_type(cell_dest)?;
 
-    println!("start {:?} dest {:?}", cell_dest, cell_start);
-    println!("cell_start_type {:?}", cell_dest_type);
+    // println!("start {:?} dest {:?}", cell_dest, cell_start);
+    // println!("cell_start_type {:?}", cell_dest_type);
 
     if cell_dest.x < 0. || cell_dest.x >= (10.) {
       return None;
@@ -169,9 +181,10 @@ impl Board {
     }
 
     match cell_dest_type {
-      PawnType::Ground => Some(cell_dest),
+      PawnType::Ground | PawnType::Place => Some(cell_dest),
       PawnType::GBox(n) => {
         if let Some(_pawn_to_push) = self.get_cell_type(cell_dest) {
+          // println!("Push box {}", n);
           let dest = self.request_push_box(n, direction)?;
           let gbox = &mut self.boxes[n as usize];
           gbox.set_position(gbox.get_position() + dest);
