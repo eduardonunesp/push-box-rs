@@ -1,4 +1,3 @@
-use cgmath::Vector2;
 use ggez;
 use ggez::event::{KeyCode, KeyMods};
 use ggez::{event, graphics, timer, Context, GameResult};
@@ -10,8 +9,12 @@ pub struct GameState {
 }
 
 impl GameState {
-    pub fn new(ctx: &mut Context) -> GameResult<GameState> {
-        let mut board = Board::new(ctx, 10, 10);
+    pub fn new(
+        ctx: &mut Context,
+        grid_size: (usize, usize),
+        cell_size: (usize, usize),
+    ) -> GameResult<GameState> {
+        let board = Board::new(ctx, grid_size, cell_size);
         Ok(GameState { board })
     }
 }
@@ -37,12 +40,14 @@ impl event::EventHandler for GameState {
         ctx: &mut Context,
         keycode: KeyCode,
         _keymods: KeyMods,
-        _repeat: bool,
+        repeat: bool,
     ) {
         if keycode == KeyCode::Escape {
             event::quit(ctx);
         }
 
-        self.board.key_down(keycode);
+        if !repeat {
+            self.board.key_down(keycode);
+        }
     }
 }
