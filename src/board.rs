@@ -65,6 +65,46 @@ impl Board {
 
   pub fn update(&mut self, _ctx: &mut Context) {}
 
+  pub fn add_block(
+    &mut self,
+    ctx: &mut Context,
+    position: Vector2<f32>,
+    cell_size: (usize, usize),
+  ) {
+    self.boxes.push(Pawn::new(
+      ctx,
+      "block.png".to_string(),
+      PawnType::Block,
+      Vector2::<f32>::new(0., 0.),
+      cell_size,
+    ));
+  }
+
+  pub fn add_box(&mut self, ctx: &mut Context, position: Vector2<f32>, cell_size: (usize, usize)) {
+    self.boxes.push(Pawn::new(
+      ctx,
+      "box.png".to_string(),
+      PawnType::GBox(self.boxes.len() as usize),
+      Vector2::<f32>::new(0., 0.),
+      cell_size,
+    ));
+  }
+
+  pub fn add_place(
+    &mut self,
+    ctx: &mut Context,
+    position: Vector2<f32>,
+    cell_size: (usize, usize),
+  ) {
+    self.boxes.push(Pawn::new(
+      ctx,
+      "place.png".to_string(),
+      PawnType::Place,
+      Vector2::<f32>::new(0., 0.),
+      cell_size,
+    ));
+  }
+
   pub fn draw(&mut self, ctx: &mut Context) -> GameResult {
     for (i, row) in self.grounds.iter_mut().enumerate() {
       for (j, col) in row.iter_mut().enumerate() {
@@ -139,7 +179,7 @@ impl Board {
     }
   }
 
-  fn request_push_box(&mut self, box_id: u8, direction: Vector2<f32>) -> Option<Vector2<f32>> {
+  fn request_push_box(&mut self, box_id: usize, direction: Vector2<f32>) -> Option<Vector2<f32>> {
     let boxes = &mut self.boxes[box_id as usize];
     let cell_start = boxes.get_position();
     let _cell_start_type = self.get_cell_type(cell_start)?;

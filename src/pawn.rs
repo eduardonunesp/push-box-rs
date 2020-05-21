@@ -7,7 +7,7 @@ use ggez::{graphics, Context, GameResult};
 pub enum PawnType {
   Player,
   Ground,
-  GBox(u8),
+  GBox(usize),
   Block,
   Place,
 }
