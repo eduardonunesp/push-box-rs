@@ -75,19 +75,24 @@ impl Board {
       ctx,
       "block.png".to_string(),
       PawnType::Block,
-      Vector2::<f32>::new(0., 0.),
+      position,
       cell_size,
     ));
+
+    self.set_cell_type(position, PawnType::Block);
   }
 
   pub fn add_box(&mut self, ctx: &mut Context, position: Vector2<f32>, cell_size: (usize, usize)) {
+    let boxes_len = self.boxes.len() as usize;
     self.boxes.push(Pawn::new(
       ctx,
       "box.png".to_string(),
-      PawnType::GBox(self.boxes.len() as usize),
-      Vector2::<f32>::new(0., 0.),
+      PawnType::GBox(boxes_len),
+      position,
       cell_size,
     ));
+
+    self.set_cell_type(position, PawnType::GBox(boxes_len));
   }
 
   pub fn add_place(
@@ -100,9 +105,11 @@ impl Board {
       ctx,
       "place.png".to_string(),
       PawnType::Place,
-      Vector2::<f32>::new(0., 0.),
+      position,
       cell_size,
     ));
+
+    self.set_cell_type(position, PawnType::Place);
   }
 
   pub fn draw(&mut self, ctx: &mut Context) -> GameResult {

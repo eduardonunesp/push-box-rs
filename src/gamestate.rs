@@ -1,3 +1,4 @@
+use cgmath::Vector2;
 use ggez;
 use ggez::event::{KeyCode, KeyMods};
 use ggez::{event, graphics, timer, Context, GameResult};
@@ -14,7 +15,8 @@ impl GameState {
         grid_size: (usize, usize),
         cell_size: (usize, usize),
     ) -> GameResult<GameState> {
-        let board = Board::new(ctx, grid_size, cell_size);
+        let mut board = Board::new(ctx, grid_size, cell_size);
+        board.add_box(ctx, Vector2::<f32>::new(5., 5.), cell_size);
         Ok(GameState { board })
     }
 }
