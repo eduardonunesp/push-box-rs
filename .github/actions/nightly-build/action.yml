@@ -1,0 +1,16 @@
+name: "Nightly Build"
+description: "Runs the rust nightly build"
+
+inputs:
+  rust-components:
+    description: Required components by toolchain
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
