@@ -32,3 +32,9 @@ jobs:
         with:
           version: '0.15.0'
           args: '-- --test-threads 1'
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: cobertura.xml
